@@ -9,23 +9,18 @@ import {
   setClientSecret,
   addAddress as addAddressAction,
   updateAddress as updateAddressAction,
-  removeAddress as removeAddressAction,
+  removeAddress as removeAddressAction
 } from './checkoutSlice';
 import { toast } from 'react-toastify';
 
-// Cargar el carrito
 export const fetchCart = createAsyncThunk(
   'checkout/fetchCart',
   async (_, { dispatch }) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
-      console.log('Iniciando fetchCart'); // 🐛
       const response = await api.get('/carts/users/cart');
       dispatch(setOrderSummary(response.data));
-            console.log('Datos del carrito:', response.data); // 🐛
-      console.log('Respuesta del carrito:', response.data);
-      // El setOrderSummary se encarga ahora de guardar en localStorage
       return response.data;
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Error al cargar el carrito';
@@ -38,17 +33,15 @@ export const fetchCart = createAsyncThunk(
   }
 );
 
-// Generar intención de pago con Stripe
 export const createPaymentIntent = createAsyncThunk(
   'checkout/createPaymentIntent',
   async (totalPrice, { dispatch, rejectWithValue }) => {
     try {
-      // Validaciones del monto
       if (totalPrice === undefined || totalPrice === null) {
         throw new Error('El monto total es requerido');
       }
 
-      if (typeof totalPrice !== 'number' || isNaN(totalPrice)) {
+      if (typeof totalPrice !== 'number' || Number.isNaN(totalPrice)) {
         throw new Error('El monto total debe ser un número válido');
       }
 
@@ -56,14 +49,9 @@ export const createPaymentIntent = createAsyncThunk(
         throw new Error('El monto mínimo de compra es $10 MXN');
       }
 
-      console.log('Total Price recibido:', totalPrice);
-      console.log('Tipo de totalPrice:', typeof totalPrice);
-
       const amountInCents = Math.round(totalPrice * 100);
-      console.log('Amount en centavos:', amountInCents);
 
-      // Validar que el monto en centavos sea válido
-      if (amountInCents < 1000) { // Mínimo 10 MXN = 1000 centavos
+      if (amountInCents < 1000) {
         throw new Error('El monto en centavos debe ser al menos 1000 (10 MXN)');
       }
 
@@ -74,33 +62,20 @@ export const createPaymentIntent = createAsyncThunk(
         amount: amountInCents,
         currency: 'mxm'
       });
-      console.log('Respuesta real del backend:', data);
+
       if (!data || !data.client_secret) {
         throw new Error('No se recibió el client_secret del servidor');
       }
 
-      console.log('Respuesta del servidor:', data.client_secret);
-
-      // Guardar el client_secret en el estado
-      // setClientSecret ahora maneja la persistencia en localStorage
       dispatch(setClientSecret(data.client_secret));
 
       return data.client_secret;
     } catch (error) {
-      console.error('Error al crear payment intent:', error);
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Error al crear la intención de pago';
 
-      // Determinar el mensaje de error apropiado
-      const errorMessage = error.response?.data?.message || // Error del servidor
-        error.message || // Error de nuestras validaciones
-        'Error al crear la intención de pago'; // Mensaje por defecto
-
-      // Actualizar el estado con el error
       dispatch(setError(errorMessage));
-
-      // Mostrar el error al usuario
       toast.error(errorMessage);
-
-      // Usar rejectWithValue para manejar el error en el componente
       return rejectWithValue(errorMessage);
     } finally {
       dispatch(setLoading(false));
@@ -108,35 +83,24 @@ export const createPaymentIntent = createAsyncThunk(
   }
 );
 
-// Confirmar el pago y finalizar la orden
 export const confirmOrder = createAsyncThunk(
   'checkout/confirmOrder',
-  /**
-   * payload: {
-   *   addressId: number,
-   *   paymentIntent: object
-   * }
-   */
   async ({ addressId, paymentIntent }, { dispatch }) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
 
-      // Construye el body exactamente como lo pide tu backend
       const body = {
         addressId: addressId,
-        pgName: "Stripe",
+        pgName: 'Stripe',
         pgPaymentId: paymentIntent.id,
         pgStatus: paymentIntent.status,
-        pgResponseMessage: "Payment successful"
+        pgResponseMessage: 'Payment successful'
       };
 
       const response = await api.post('/order/users/payments/CARD', body);
 
-      // Limpiar el client secret después de una orden exitosa
       dispatch(setClientSecret(null));
-      // Ya no es necesario llamar a persistState()
-
       toast.success('Pago procesado exitosamente');
       return response.data;
     } catch (error) {
@@ -148,13 +112,14 @@ export const confirmOrder = createAsyncThunk(
       dispatch(setLoading(false));
     }
   }
-);export const confirmCashOrder = createAsyncThunk(
+);
+
+export const confirmCashOrder = createAsyncThunk(
   'checkout/confirmCashOrder',
-  async ({ addressId }, { dispatch, rejectWithValue }) => {
+  async ({ addressId }, { rejectWithValue }) => {
     try {
-      // Validación robusta del addressId
       const parsedAddressId = Number(addressId);
-      if (isNaN(parsedAddressId) || parsedAddressId <= 0) {
+      if (Number.isNaN(parsedAddressId) || parsedAddressId <= 0) {
         throw new Error('ID de dirección inválido');
       }
 
@@ -171,7 +136,7 @@ export const confirmOrder = createAsyncThunk(
     }
   }
 );
-// GET /addresses
+
 export const fetchAddresses = createAsyncThunk(
   'checkout/fetchAddresses',
   async (_, { dispatch }) => {
@@ -180,7 +145,6 @@ export const fetchAddresses = createAsyncThunk(
       dispatch(setError(null));
 
       const response = await api.get('/users/addresses');
-      // Simplemente actualizar el estado sin persistir
       dispatch(setAddressList(response.data));
       return response.data;
     } catch (error) {
@@ -194,7 +158,6 @@ export const fetchAddresses = createAsyncThunk(
   }
 );
 
-// POST /addresses
 export const createAddress = createAsyncThunk(
   'checkout/createAddress',
   async (addressData, { dispatch }) => {
@@ -207,8 +170,6 @@ export const createAddress = createAsyncThunk(
 
       dispatch(addAddressAction(newAddress));
       dispatch(setSelectedAddress(newAddress));
-      // Ya no persistimos las direcciones
-
       toast.success('Dirección agregada exitosamente');
       return newAddress;
     } catch (error) {
@@ -222,7 +183,6 @@ export const createAddress = createAsyncThunk(
   }
 );
 
-// PUT /addresses/{addressId}
 export const updateAddress = createAsyncThunk(
   'checkout/updateAddress',
   async ({ addressId, addressData }, { dispatch, getState }) => {
@@ -239,7 +199,6 @@ export const updateAddress = createAsyncThunk(
       if (selectedAddress?.addressId === addressId) {
         dispatch(setSelectedAddress(updatedAddress));
       }
-      // Ya no persistimos las direcciones
 
       toast.success('Dirección actualizada exitosamente');
       return updatedAddress;
@@ -254,7 +213,6 @@ export const updateAddress = createAsyncThunk(
   }
 );
 
-// DELETE /addresses/{addressId}
 export const deleteAddress = createAsyncThunk(
   'checkout/deleteAddress',
   async (addressId, { dispatch, getState }) => {
@@ -270,7 +228,6 @@ export const deleteAddress = createAsyncThunk(
       if (selectedAddress?.addressId === addressId) {
         dispatch(setSelectedAddress(null));
       }
-      // Ya no persistimos las direcciones
 
       toast.success('Dirección eliminada exitosamente');
       return addressId;

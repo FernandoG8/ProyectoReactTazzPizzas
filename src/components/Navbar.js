@@ -1,6 +1,6 @@
 // src/components/Sidebar.js
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'; // Cambiamos Link por NavLink
+import { NavLink, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/css/sidebar.css';
 import { useAuth } from '../context/AuthContext';
@@ -22,45 +22,29 @@ const Sidebar = () => {
         </div>
         <ul className="nav flex-column px-3">
           <li className="nav-item">
-            <NavLink
-              to="/admin"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              end // Importante para que solo coincida con /admin exactamente
-            >
+            <NavLink to="/admin" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>
               Dashboard
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink
-              to="/admin/pedidos"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            >
+            <NavLink to="/admin/pedidos" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Pedidos
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink
-              to="/admin/products"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            >
+            <NavLink to="/admin/products" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Productos
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink
-              to="/admin/categories"
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            >
+            <NavLink to="/admin/categories" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Categories
             </NavLink>
           </li>
         </ul>
       </div>
       <div className="px-3 pb-4">
-        <button 
-          onClick={handleLogout}
-          className="btn btn-danger w-100"
-        >
+        <button onClick={handleLogout} className="btn btn-danger w-100">
           Cerrar Sesión
         </button>
       </div>

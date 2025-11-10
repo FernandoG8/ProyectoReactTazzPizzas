@@ -61,7 +61,6 @@ const ProductDetail = () => {
       );
 
       if (response.status === 201) {
-        console.log("Producto agregado al carrito");
         window.dispatchEvent(new CustomEvent("cartUpdated"));
       }
     } catch (error) {
