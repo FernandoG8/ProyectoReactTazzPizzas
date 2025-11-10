@@ -71,7 +71,6 @@ const Home = () => {
         setAddresses(addressesRes.data);
         setDailyEarnings(earnings);
         setDailyOrderCount(orderCount);
-        console.log('Ganancias del día:', earnings);
         setLoading(false);
         setOrdersLoading(false);
       } catch (error) {

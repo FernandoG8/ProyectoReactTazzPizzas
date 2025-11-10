@@ -24,11 +24,16 @@ import RegistroUsuarios from './pages/RegistroUsuarios';
 
 // Public Pages
 import SobreNosotros from './pages/SobreNosotros';
+import Unauthorized from './pages/Unauthorized';
 
 // Components and Providers
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/checkout/Layout';
 import { AuthProvider } from './context/AuthContext';
+
+const renderWithLayout = (children, layoutProps = {}) => (
+  <Layout {...layoutProps}>{children}</Layout>
+);
 
 const App = () => {
   return (
@@ -40,17 +45,41 @@ const App = () => {
         <Route path="/auth" element={<AuthForm />} />
         <Route path="/Registro" element={<RegistroUsuarios />} />
 
-
         {/* ============= RUTAS PÚBLICAS DE LA TIENDA (CON LAYOUT Y PADDING) ============= */}
-        <Route path="/" element={<Layout withNavbarPadding={true} ><StoreHome /></Layout>} />
-        <Route path="/tienda" element={<Layout withNavbarPadding={false}><StoreHome /></Layout>} />
-        <Route path="/menu" element={<Layout withNavbarPadding={true} navbarSolid={true}><Menu /></Layout>} />
-        <Route path="/about" element={<Layout withNavbarPadding={true} navbarSolid={true}><SobreNosotros /></Layout>} />
-        <Route path="/checkout" element={<Layout withNavbarPadding={true} navbarSolid={true}><Checkout /></Layout>} />
-        <Route path="/pedidosUsuario" element={<Layout withNavbarPadding={true} navbarSolid={true}><PedidosUsuario /></Layout>} />
+        <Route
+          path="/"
+          element={renderWithLayout(<StoreHome />, { withNavbarPadding: true })}
+        />
+        <Route
+          path="/tienda"
+          element={renderWithLayout(<StoreHome />, { withNavbarPadding: false })}
+        />
+        <Route
+          path="/menu"
+          element={renderWithLayout(<Menu />, { withNavbarPadding: true, navbarSolid: true })}
+        />
+        <Route
+          path="/about"
+          element={renderWithLayout(<SobreNosotros />, { withNavbarPadding: true, navbarSolid: true })}
+        />
+        <Route
+          path="/checkout"
+          element={renderWithLayout(<Checkout />, { withNavbarPadding: true, navbarSolid: true })}
+        />
+        <Route
+          path="/pedidosUsuario"
+          element={renderWithLayout(<PedidosUsuario />, { withNavbarPadding: true, navbarSolid: true })}
+        />
+        <Route
+          path="/unauthorized"
+          element={renderWithLayout(<Unauthorized />, { withNavbarPadding: true, navbarSolid: true })}
+        />
 
         {/* ============= PRODUCT DETAIL (SIN PADDING) ============= */}
-        <Route path="/producto/:id" element={<Layout withNavbarPadding={false}><ProductDetail /></Layout>} />
+        <Route
+          path="/producto/:id"
+          element={renderWithLayout(<ProductDetail />, { withNavbarPadding: false })}
+        />
 
         {/* Rutas Admin agrupadas */}
         <Route
@@ -67,9 +96,6 @@ const App = () => {
           <Route path="carts" element={<Carts />} />
           <Route path="pedidos" element={<AdminPedidos />} />
         </Route>
-
-        {/* ============= RUTAS PROTEGIDAS DE ADMINISTRADOR (SIN PADDING) ============= */}
-
 
         {/* ============= RUTA DE FALLBACK ============= */}
         <Route path="*" element={<Navigate to="/tienda" replace />} />

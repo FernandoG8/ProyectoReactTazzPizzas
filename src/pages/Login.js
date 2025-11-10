@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useDispatch } from 'react-redux';
 import '../assets/css/login.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -11,9 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login, isLoggedIn } = useAuth();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,14 +19,14 @@ const Login = () => {
     AOS.init({ duration: 1000 });
   }, []);
 
-  // Manejar redirección basada en roles
   const handleRedirection = (userData) => {
     const from = location.state?.from?.pathname;
-    
-    // Si el usuario intentaba acceder a una ruta específica y tiene los permisos necesarios
+
     if (from) {
-      if (from.startsWith('/admin') && 
-          (userData.roles.includes('ROLE_ADMIN') || userData.roles.includes('ROLE_SELLER'))) {
+      if (
+        from.startsWith('/admin') &&
+        (userData.roles.includes('ROLE_ADMIN') || userData.roles.includes('ROLE_SELLER'))
+      ) {
         navigate(from);
         return;
       }
@@ -38,7 +36,6 @@ const Login = () => {
       }
     }
 
-    // Redirección por defecto basada en rol
     if (userData.roles.includes('ROLE_ADMIN') || userData.roles.includes('ROLE_SELLER')) {
       navigate('/admin');
     } else {
@@ -53,15 +50,13 @@ const Login = () => {
 
     try {
       const result = await login(username, password);
-      
+
       if (!result.success) {
         setError(result.error || 'Credenciales inválidas');
         return;
       }
 
-      // Manejar la redirección basada en el rol del usuario
       handleRedirection(result.data);
-      
     } catch (err) {
       setError('Error al intentar iniciar sesión');
       console.error('Error en login:', err);
@@ -70,7 +65,6 @@ const Login = () => {
     }
   };
 
-  // Redirigir si ya está autenticado
   useEffect(() => {
     if (isLoggedIn) {
       const storedRoles = JSON.parse(localStorage.getItem('userRoles') || '[]');
@@ -110,8 +104,8 @@ const Login = () => {
               aria-label="Contraseña"
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="login-btn"
             disabled={isLoading}
           >
