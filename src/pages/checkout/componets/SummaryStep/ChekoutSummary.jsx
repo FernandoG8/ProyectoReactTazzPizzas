@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-// Ajusta las rutas según tu estructura de carpetas
 import {
   fetchCart,
   createPaymentIntent
@@ -13,8 +12,7 @@ import {
   selectLoading,
   selectPaymentMethod,
   prevStep,
-  setLoading,
-  setError
+  setLoading
 } from '../../../../store/slices/checkout/checkoutSlice';
 
 const CheckoutSummary = ({ onProceedToPayment }) => {
@@ -24,28 +22,21 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
   const loading = useSelector(selectLoading);
   const paymentMethod = useSelector(selectPaymentMethod);
 
-  // Cargar el carrito al montar el componente
   useEffect(() => {
-    if (!orderSummary.products?.length || orderSummary.totalPrice === undefined) {
-      dispatch(fetchCart());
-    }
-    // eslint-disable-next-line
-  }, []);
+    dispatch(fetchCart());
+  }, [dispatch]);
 
-  // Botón para actualizar el carrito manualmente
   const handleRefreshCart = async () => {
     try {
       await dispatch(fetchCart()).unwrap();
       toast.success("Carrito actualizado correctamente");
-    } catch (error) {
+    } catch (refreshError) {
       toast.error("Error al actualizar el carrito");
     }
   };
 
-  // Proceder al pago (Stripe o efectivo)
   const handleProceedToPayment = async () => {
     try {
-      // Refresca el carrito antes de proceder
       await dispatch(fetchCart()).unwrap();
 
       if (!orderSummary?.totalPrice || orderSummary.totalPrice === 0) {
@@ -55,19 +46,16 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
 
       if (paymentMethod === "CARD") {
         dispatch(setLoading(true));
-        // Crea el intent de pago con Stripe
         const clientSecret = await dispatch(
           createPaymentIntent(orderSummary.totalPrice)
         ).unwrap();
 
         if (clientSecret) {
-          // Llama al callback con el clientSecret para el flujo de Stripe
           onProceedToPayment(clientSecret);
         } else {
           toast.error("No se pudo obtener el client secret de Stripe.");
         }
       } else if (paymentMethod === "CASH") {
-        // Para efectivo, solo avanza al siguiente paso
         onProceedToPayment();
       } else {
         toast.error("Selecciona un método de pago válido");
@@ -83,7 +71,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
     }
   };
 
-  // Estados de carga y errores
   if (loading) {
     return (
       <div className="text-center py-4">
@@ -99,7 +86,7 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
       <div className="alert alert-danger">
         <i className="bi bi-exclamation-triangle me-2"></i>
         No se pudo cargar la información del pedido.
-        <button 
+        <button
           className="btn btn-link"
           onClick={handleRefreshCart}
           disabled={loading}
@@ -115,7 +102,7 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
       <div className="alert alert-warning">
         <i className="bi bi-cart-x me-2"></i>
         Tu carrito está vacío. Agrega productos para continuar con la compra.
-        <button 
+        <button
           className="btn btn-link"
           onClick={handleRefreshCart}
           disabled={loading}
@@ -131,7 +118,7 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
       <div className="alert alert-danger">
         <i className="bi bi-currency-dollar me-2"></i>
         El total de la orden no es válido. Verifica los productos en tu carrito.
-        <button 
+        <button
           className="btn btn-link"
           onClick={handleRefreshCart}
           disabled={loading}
@@ -142,7 +129,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
     );
   }
 
-  // Traducción del método de pago
   const paymentMethodLabel =
     paymentMethod === "CARD"
       ? "Tarjeta de Crédito/Débito"
@@ -152,7 +138,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
 
   return (
     <div className="summary-container">
-      {/* Botón de actualización en la parte superior */}
       <div className="d-flex justify-content-end mb-3">
         <button
           className="btn btn-outline-secondary btn-sm"
@@ -164,7 +149,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
         </button>
       </div>
 
-      {/* Dirección de envío */}
       <div className="mb-4">
         <h4 className="mb-3">Dirección de envío</h4>
         <div className="card">
@@ -180,7 +164,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
         </div>
       </div>
 
-      {/* Método de pago */}
       <div className="mb-4">
         <h4 className="mb-3">Método de pago</h4>
         <div className="card">
@@ -199,7 +182,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
         </div>
       </div>
 
-      {/* Productos */}
       <div className="mb-4">
         <h4 className="mb-3">Productos</h4>
         {orderSummary.products.map((product) => (
@@ -214,7 +196,7 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
                     style={{
                       width: "60px",
                       height: "60px",
-                      objectFit: "cover",
+                      objectFit: "cover"
                     }}
                   />
                   <div>
@@ -245,7 +227,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
         ))}
       </div>
 
-      {/* Resumen de costos */}
       <div className="card mb-4">
         <div className="card-body">
           <div className="d-flex justify-content-between mb-2">
@@ -264,7 +245,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
         </div>
       </div>
 
-      {/* Botones de navegación y pago */}
       <div className="d-flex justify-content-between align-items-center">
         <button
           className="btn btn-outline-primary"

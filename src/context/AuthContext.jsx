@@ -1,7 +1,7 @@
 // src/context/auth/AuthContext.jsx
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import api from '../services/api'; 
+import api from '../services/api';
 import { authReducer, initialState } from './authReducer';
 import { login as loginAction, logout as logoutAction } from '../store/slices/auth/authSlice';
 
@@ -11,31 +11,31 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const reduxDispatch = useDispatch();
 
-  useEffect(() => {
-    checkAuthStatus();
-    // eslint-disable-next-line
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const storedUsername = localStorage.getItem('username');
       const storedRoles = JSON.parse(localStorage.getItem('userRoles') || '[]');
-      
+
       if (storedUsername && storedRoles.length > 0) {
         const userData = {
           username: storedUsername,
           roles: storedRoles
         };
-        
+
         dispatch({ type: 'AUTH_SUCCESS', payload: userData });
         reduxDispatch(loginAction(userData));
       }
     } catch (error) {
       console.error('Error checking auth status:', error);
+      dispatch({ type: 'AUTH_ERROR', payload: 'No se pudo validar la sesión' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
-  };
+  }, [reduxDispatch]);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
 
   const login = async (username, password) => {
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
           username: response.data.username,
           roles: response.data.roles
         };
-        console.log('Login exitoso:', userData);
+
         localStorage.setItem('username', userData.username);
         localStorage.setItem('userRoles', JSON.stringify(userData.roles));
 
@@ -61,12 +61,17 @@ export const AuthProvider = ({ children }) => {
       const errorMessage = err.response?.data?.message || 'Error en la autenticación';
       dispatch({ type: 'LOGIN_ERROR', payload: errorMessage });
       return { success: false, error: errorMessage };
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 
   const logout = async () => {
     try {
       await api.post('/auth/signout', {});
+    } catch (err) {
+      console.error('Error en logout:', err);
+    } finally {
       localStorage.removeItem('username');
       localStorage.removeItem('userRoles');
       localStorage.removeItem('userRole');
@@ -74,10 +79,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('checkout-state');
       dispatch({ type: 'LOGOUT' });
       reduxDispatch(logoutAction());
-      return { success: true };
-    } catch (err) {
-      console.error('Error en logout:', err);
-      return { success: false, error: err.message };
     }
   };
 
@@ -105,7 +106,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   if (state.loading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+          <p className="mt-2">Verificando sesión...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

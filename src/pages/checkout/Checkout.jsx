@@ -12,17 +12,14 @@ import {
   selectPaymentMethod,
   setLoading,
   setError,
-  resetCheckout,
+  resetCheckout
 } from "../../store/slices/checkout/checkoutSlice";
 import {
   fetchAddresses,
   createAddress,
   updateAddress,
   deleteAddress,
-  createPaymentIntent,
-  confirmOrder,
-  fetchCart,
-  confirmCashOrder,
+  confirmOrder
 } from "../../store/slices/checkout/checkoutThunks";
 import AddressInfoModal from "./componets/AddressStep/AddressInfoModal";
 import AddressList from "./componets/AddressStep/AddressList";
@@ -51,16 +48,18 @@ const Checkout = () => {
   const [stripeLoaded, setStripeLoaded] = useState(false);
 
   useEffect(() => {
+    let isSubscribed = true;
+
     const verifyStripe = async () => {
       try {
         const stripe = await stripePromise;
-        if (stripe) {
-          console.log("Stripe cargado correctamente");
+        if (stripe && isSubscribed) {
           setStripeLoaded(true);
-        } else {
+        } else if (isSubscribed) {
           throw new Error("No se pudo inicializar Stripe");
         }
       } catch (err) {
+        if (!isSubscribed) return;
         console.error("Error al cargar Stripe:", err);
         toast.error(
           "El sistema de pagos no está disponible en este momento. Por favor, intenta más tarde."
@@ -70,15 +69,19 @@ const Checkout = () => {
     };
 
     verifyStripe();
+
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
   useEffect(() => {
     const loadAddresses = async () => {
       try {
         await dispatch(fetchAddresses()).unwrap();
-      } catch (error) {
+      } catch (fetchError) {
         toast.error("Error al cargar las direcciones");
-        console.error("Error loading addresses:", error);
+        console.error("Error loading addresses:", fetchError);
       }
     };
     loadAddresses();
@@ -89,8 +92,8 @@ const Checkout = () => {
       await dispatch(createAddress(address)).unwrap();
       toast.success("Dirección agregada exitosamente");
       setShowModal(false);
-    } catch (error) {
-      toast.error(error.message || "Error al agregar la dirección");
+    } catch (createError) {
+      toast.error(createError.message || "Error al agregar la dirección");
     }
   };
 
@@ -99,15 +102,15 @@ const Checkout = () => {
       await dispatch(
         updateAddress({
           addressId: editingAddress.addressId,
-          addressData,
+          addressData
         })
       ).unwrap();
 
       setShowModal(false);
       setEditingAddress(null);
       toast.success("Dirección actualizada exitosamente");
-    } catch (error) {
-      toast.error(error.message || "Error al actualizar la dirección");
+    } catch (updateError) {
+      toast.error(updateError.message || "Error al actualizar la dirección");
     }
   };
 
@@ -116,8 +119,8 @@ const Checkout = () => {
       try {
         await dispatch(deleteAddress(addressId)).unwrap();
         toast.success("Dirección eliminada exitosamente");
-      } catch (error) {
-        toast.error(error.message || "Error al eliminar la dirección");
+      } catch (deleteError) {
+        toast.error(deleteError.message || "Error al eliminar la dirección");
       }
     }
   };
@@ -159,7 +162,7 @@ const Checkout = () => {
       await dispatch(
         confirmOrder({
           addressId: selectedAddress.addressId,
-          paymentIntent,
+          paymentIntent
         })
       ).unwrap();
 
@@ -168,8 +171,8 @@ const Checkout = () => {
       setTimeout(() => {
         dispatch(resetCheckout());
       }, 5000);
-    } catch (error) {
-      toast.error(error.message || "Error al confirmar la orden");
+    } catch (confirmationError) {
+      toast.error(confirmationError.message || "Error al confirmar la orden");
     } finally {
       dispatch(setLoading(false));
     }
@@ -197,6 +200,38 @@ const Checkout = () => {
       </div>
     </div>
   );
+
+  const renderCardPaymentStep = () => {
+    if (!stripeLoaded) {
+      return (
+        <div className="alert alert-info" role="alert">
+          Cargando el formulario de pago seguro...
+        </div>
+      );
+    }
+
+    if (!clientSecret) {
+      return (
+        <div className="alert alert-warning" role="alert">
+          Genera tu resumen de pedido para inicializar el pago.
+        </div>
+      );
+    }
+
+    return (
+      <Elements
+        stripe={stripePromise}
+        options={{
+          clientSecret,
+          appearance: {
+            theme: "stripe"
+          }
+        }}
+      >
+        <StripePaymentForm onSuccess={handlePaymentSuccess} />
+      </Elements>
+    );
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -289,8 +324,8 @@ const Checkout = () => {
                 {selectedAddress?.addressId ? (
                   <CashPaymentProcessing
                     addressId={selectedAddress.addressId}
-                    onError={(error) => {
-                      toast.error(error);
+                    onError={(cashError) => {
+                      toast.error(cashError);
                       dispatch(prevStep());
                     }}
                   />
@@ -307,19 +342,7 @@ const Checkout = () => {
           <div className="card border-0 shadow-sm">
             <div className="card-body">
               <h3 className="card-title mb-4">Pago</h3>
-              {clientSecret && (
-                <Elements
-                  stripe={stripePromise}
-                  options={{
-                    clientSecret,
-                    appearance: {
-                      theme: "stripe",
-                    },
-                  }}
-                >
-                  <StripePaymentForm onSuccess={handlePaymentSuccess} />
-                </Elements>
-              )}
+              {renderCardPaymentStep()}
             </div>
           </div>
         );
@@ -369,7 +392,7 @@ const Checkout = () => {
                     height: "40px",
                     color: index <= step ? "white" : "gray",
                     border: "2px solid",
-                    borderColor: index <= step ? "#007bff" : "#dee2e6",
+                    borderColor: index <= step ? "#007bff" : "#dee2e6"
                   }}
                 >
                   {index + 1}
@@ -391,7 +414,7 @@ const Checkout = () => {
                 right: "50px",
                 height: "2px",
                 backgroundColor: "#dee2e6",
-                zIndex: -1,
+                zIndex: -1
               }}
             />
           </div>

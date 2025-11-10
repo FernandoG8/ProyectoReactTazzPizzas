@@ -17,9 +17,15 @@ const MenuUI = ({
   onAddToCart,
   isLoading
 }) => {
-
   const handleCartClick = () => {
-    window.dispatchEvent(new CustomEvent("toggleCart"));
+    window.dispatchEvent(new CustomEvent('toggleCart'));
+  };
+
+  const onKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSearchSubmit();
+    }
   };
 
   return (
@@ -62,7 +68,15 @@ const MenuUI = ({
                 placeholder="Buscar productos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={onKeyDown}
               />
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={handleSearchSubmit}
+              >
+                Buscar
+              </button>
             </div>
           </div>
         </div>
