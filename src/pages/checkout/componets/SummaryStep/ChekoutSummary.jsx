@@ -11,8 +11,7 @@ import {
   selectSelectedAddress,
   selectLoading,
   selectPaymentMethod,
-  prevStep,
-  setLoading
+  prevStep
 } from '../../../../store/slices/checkout/checkoutSlice';
 
 const CheckoutSummary = ({ onProceedToPayment }) => {
@@ -37,17 +36,24 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
 
   const handleProceedToPayment = async () => {
     try {
-      await dispatch(fetchCart()).unwrap();
+      const latestSummary = await dispatch(fetchCart()).unwrap();
+      const effectiveSummary = latestSummary || orderSummary;
 
-      if (!orderSummary?.totalPrice || orderSummary.totalPrice === 0) {
+      if (!effectiveSummary?.products?.length) {
+        toast.error("Tu carrito está vacío. Agrega productos para continuar.");
+        return;
+      }
+
+      const totalToCharge = effectiveSummary.totalPrice;
+
+      if (!totalToCharge || totalToCharge <= 0) {
         toast.error("El total de la orden no es válido");
         return;
       }
 
       if (paymentMethod === "CARD") {
-        dispatch(setLoading(true));
         const clientSecret = await dispatch(
-          createPaymentIntent(orderSummary.totalPrice)
+          createPaymentIntent(totalToCharge)
         ).unwrap();
 
         if (clientSecret) {
@@ -66,8 +72,6 @@ const CheckoutSummary = ({ onProceedToPayment }) => {
         error.message ||
           "Error al crear la intención de pago. Intenta de nuevo."
       );
-    } finally {
-      dispatch(setLoading(false));
     }
   };
 

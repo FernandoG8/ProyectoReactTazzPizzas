@@ -421,18 +421,24 @@ const Checkout = () => {
         </div>
       </div>
 
-      {loading ? (
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-        </div>
-      ) : error ? (
+      {error ? (
         <div className="alert alert-danger" role="alert">
           {error}
         </div>
       ) : (
-        renderStep()
+        <div className="position-relative">
+          {renderStep()}
+          {loading && (
+            <div
+              className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75"
+              style={{ zIndex: 10 }}
+            >
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       <AddressInfoModal
