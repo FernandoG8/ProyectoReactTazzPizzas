@@ -1,0 +1,27 @@
+/* src/assets/css/products.css */
+
+.main-content {
+    margin-left: 230px;
+    width: calc(100% - 230px);
+    background-color: #fdfdfd;
+    min-height: 100vh;
+  }
+  
+  .table th,
+  .table td {
+    vertical-align: middle;
+    font-size: 16px;
+  }
+  
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+  }
+
+  .table-description-cell {
+    max-width: 300px; /* Ajusta según necesites */
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

@@ -1,0 +1,225 @@
+/* Estilos base */
+.registro-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff5f5 0%, #f8f9fa 100%);
+  padding: 20px;
+}
+
+.registro-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.registro-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.registro-header h2 {
+  color: #e63946;
+  font-size: 1.8rem;
+  margin: 15px 0 5px;
+}
+
+.registro-header p {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.pizza-icon {
+  font-size: 2.5rem;
+  animation: bounce 2s infinite;
+}
+
+/* Formulario */
+.registro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.input-group input:focus {
+  border-color: #e63946;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+  outline: none;
+  background-color: white;
+}
+
+.input-group.error input {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.error-msg {
+  display: block;
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-error {
+  color: #dc3545;
+  text-align: center;
+  padding: 10px;
+  background: #fff5f5;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  animation: shake 0.4s ease;
+}
+
+/* Botón de submit */
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3);
+}
+
+.submit-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* Enlace de login */
+.login-link {
+  text-align: center;
+  margin-top: 15px;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.login-link a {
+  color: #e63946;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Mensaje de éxito */
+.registro-success {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.success-animation {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  background: #4bb543;
+  color: white;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  line-height: 60px;
+  margin-bottom: 15px;
+  animation: scaleIn 0.5s ease;
+}
+
+.registro-success h3 {
+  color: #2e7d32;
+  margin-bottom: 5px;
+}
+
+.registro-success p {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0); opacity: 0; }
+  80% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .registro-card {
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+  
+  .registro-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .input-group input {
+    padding: 12px 14px;
+  }
+  
+  .submit-btn {
+    padding: 13px;
+  }
+}

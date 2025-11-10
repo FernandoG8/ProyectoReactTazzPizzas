@@ -1,0 +1,15 @@
+/* src/assets/css/home.css */
+
+.main-content {
+    margin-left: 230px; /* Igual al ancho del sidebar */
+    width: calc(100% - 230px);
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .card-shadow {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  

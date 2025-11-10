@@ -1,0 +1,54 @@
+[33mcommit 5cc4bf8e3b3e2f46d041e2c01a1b900824f8544d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Mon May 5 17:06:42 2025 -0600
+
+    todo funcional hasta ahora, Ya funciona el envio de productos al carrito al backend falta implementarlo en el Frontend Version 1 funcional
+
+[33mcommit e970dc70459984f0ffbb2ea09f743e0aebc144b9[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Sun May 4 21:40:43 2025 -0600
+
+    Paginacion y consumo de endpoints mostrar productos listos
+
+[33mcommit 60bdb7c1ec156fd76e8e6948401217cc62865b03[m
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Sun May 4 19:26:14 2025 -0600
+
+    Funciona To pero no obtiene los productos del Menu
+
+[33mcommit 3d205307c887eddfaf1134ef8853390eae1717a7[m
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Sat May 3 16:31:34 2025 -0600
+
+    Creo que ya es todo date chable
+
+[33mcommit ef5d96051c31a83d8f419b347bc3ea9c9894626a[m
+Merge: b89b508 a0397d6
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Wed Apr 23 13:39:18 2025 -0600
+
+    unificando la vaina
+
+[33mcommit b89b508c2bb3787274c27bd949c5128c57f4e0a4[m
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Wed Apr 23 13:24:01 2025 -0600
+
+    Guardando cambios antes de subir al nuevo repositorio
+
+[33mcommit 7d7807c45d8578bb6b14e269607538303d952b75[m
+Author: gvdev666 <gvdev666@gmail.com>
+Date:   Sat Apr 19 17:51:09 2025 -0600
+
+    Front End pizza
+
+[33mcommit a0397d68855439e48f64726e59f607484e7b6d1f[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Alexx17A <al070697@uacam.mx>
+Date:   Fri Apr 18 17:58:52 2025 -0600
+
+    first commit
+
+[33mcommit 29b17e632f4391c3a8e430c329374687910d11a7[m
+Author: gvdev666 <gvdev666@gmail.com>
+Date:   Fri Apr 18 16:39:39 2025 -0600
+
+    Initialize project using Create React App

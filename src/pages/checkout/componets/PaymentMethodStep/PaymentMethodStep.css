@@ -1,0 +1,58 @@
+/* PaymentMethodStep.css */
+.payment-method-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.payment-method-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-method-card:hover {
+  border-color: #007bff;
+  background-color: #f8f9fa;
+}
+
+.payment-method-card.selected {
+  border-color: #007bff;
+  background-color: #f0f7ff;
+}
+
+.payment-method-icon {
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+.payment-method-details {
+  flex: 1;
+}
+
+.payment-method-details h4 {
+  margin: 0;
+  color: #333;
+}
+
+.payment-method-details p {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.payment-method-check {
+  color: #007bff;
+  font-size: 20px;
+}

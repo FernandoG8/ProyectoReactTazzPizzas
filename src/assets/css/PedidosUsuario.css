@@ -1,0 +1,72 @@
+.pedidos-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.pedido-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.pedido-header,
+.pedido-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.pedido-items {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+.pedido-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.pedidos-error {
+  color: red;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -150px; }
+  100% { left: 100%; }
+}
+
+.shimmer-line {
+  display: inline-block;
+  height: 1rem;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.shimmer-line.short { width: 30%; }
+.shimmer-line.medium { width: 50%; }
+.shimmer-line.small { width: 20%; }
